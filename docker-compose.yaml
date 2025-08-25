@@ -2,6 +2,11 @@ services:
   nodejs-helloworld:
     image: tupinumboor/nodejs-helloworld
     container_name: nodejs-helloworld
+    restart: always
+    ports:
+      - "$PORT:$PORT"
+    env_file:
+      - .env
     build:
       context: .
       args:
