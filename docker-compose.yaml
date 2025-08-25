@@ -1,0 +1,11 @@
+services:
+  nodejs-helloworld:
+    image: tupinumboor/nodejs-helloworld
+    container_name: nodejs-helloworld
+    build:
+      context: .
+      args:
+        VERSION: ${VERSION}
+      tags:
+        - "tupinumboor/nodejs-helloworld:${VERSION}"
+        - "tupinumboor/nodejs-helloworld:latest"
