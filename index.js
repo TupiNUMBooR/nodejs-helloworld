@@ -14,7 +14,7 @@ function start() {
     res.end('hello world');
   });
   server.listen(port, () => console.log(`http://localhost:${port}`));
-  logger.info('Server is running on port ' + port);
+  logger.info(`Server is running on port ${port}`);
 }
 
 function handleSignals() {
@@ -25,12 +25,12 @@ function handleSignals() {
 }
 
 function shutdown(signal) {
-  logger.info('shutdown on ' + signal);
+  logger.info(`shutdown on ${signal}`);
   server.close();
 }
 
 function shutdownOnError(errorType, error) {
-  logger.error('shutdown on '+ errorType +': "' + error + '"');
+  logger.error(`shutdown on ${errorType}: "${error}"`);
   server.close();
   process.exit(101);
 }
