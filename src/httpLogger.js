@@ -10,6 +10,7 @@ const httpLogger = pinoHttp({
     res.setHeader('X-Request-Id', id);
     return id;
   },
+  useLevel: "debug"
 });
 
 module.exports = httpLogger;
