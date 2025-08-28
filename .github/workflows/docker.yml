@@ -3,6 +3,7 @@ name: docker
 on:
   push:
     branches: [ "dev" ]
+    tags: [ "*" ]
 
 permissions:
   contents: read
