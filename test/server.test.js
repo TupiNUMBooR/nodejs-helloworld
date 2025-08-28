@@ -1,10 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import server from "../src/server.js";
+import server from '../src/server.js';
 
 test('GET /', async () => {
-  const port = 18080;
-  process.env.PORT = port;
+  let port = process.env.PORT;
   server.start();
 
   const res = await fetch(`http://localhost:${port}/`);
@@ -13,5 +12,5 @@ test('GET /', async () => {
   assert.strictEqual(res.status, 200);
   assert.strictEqual(text, 'hello world');
 
-  server.shutdown();
+  server.stop();
 });

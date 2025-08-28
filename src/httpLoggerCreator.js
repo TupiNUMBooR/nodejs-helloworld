@@ -1,7 +1,6 @@
-require('dotenv').config();
+const { randomUUID } = require('crypto');
 const pinoHttp = require('pino-http');
-const { randomUUID } = require('node:crypto');
-const logger = require('./logger.js');
+const logger = require('./logger');
 
 function create(level) {
   return pinoHttp({

@@ -1,10 +1,9 @@
-require('dotenv').config();
 const pino = require('pino');
+const envalid = require('envalid');
 
-const {cleanEnv, str, bool} = require('envalid');
-const env = cleanEnv(process.env, {
-  LOG_LEVEL: str({choices: ['trace', 'debug', 'info', 'warn', 'error']}),
-  LOG_PRETTY: bool()
+const env = envalid.cleanEnv(process.env, {
+  LOG_LEVEL: envalid.str({choices: ['trace', 'debug', 'info', 'warn', 'error']}),
+  LOG_PRETTY: envalid.bool()
 });
 
 const logger = pino({

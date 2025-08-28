@@ -1,6 +1,6 @@
 import test from 'node:test';
-import httpLogger from '../src/httpLogger.js';
-import { EventEmitter } from 'node:events';
+import {EventEmitter} from 'node:events';
+import httpLoggerCreator from '../src/httpLoggerCreator.js';
 
 test('httpLogger', async () => {
   let req = {
@@ -10,8 +10,9 @@ test('httpLogger', async () => {
   };
 
   let res = new EventEmitter();
-  res.setHeader = () => {};
+  res.setHeader = () => {
+  };
 
-  httpLogger.create('info')(req, res);
+  httpLoggerCreator.create('info')(req, res);
   res.emit('finish');
 });

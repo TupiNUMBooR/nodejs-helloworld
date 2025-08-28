@@ -3,8 +3,7 @@ import assert from 'node:assert';
 import metrics from '../src/metrics.js';
 
 test('GET /healthz', async () => {
-  const port = 18081;
-  process.env.METRICS_PORT = port;
+  let port = process.env.METRICS_PORT;
   metrics.start();
 
   const res = await fetch(`http://localhost:${port}/healthz`);
@@ -13,12 +12,11 @@ test('GET /healthz', async () => {
   assert.strictEqual(res.status, 200);
   assert.strictEqual(text, 'healthy');
 
-  metrics.shutdown();
+  metrics.stop();
 });
 
 test('GET /metrics', async () => {
-  const port = 18081;
-  process.env.METRICS_PORT = port;
+  let port = process.env.METRICS_PORT;
   metrics.start();
 
   const res = await fetch(`http://localhost:${port}/metrics`);
@@ -27,5 +25,5 @@ test('GET /metrics', async () => {
   assert.strictEqual(res.status, 200);
   assert.match(text, /# HELP process_cpu_user_seconds_total/);
 
-  metrics.shutdown();
+  metrics.stop();
 });

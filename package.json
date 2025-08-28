@@ -6,11 +6,11 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "node --watch src/index.js",
-    "test": "node --test"
+    "test": "node --test --require ./test/setup.js"
   },
   "private": true,
   "dependencies": {
-    "dotenv": "^17.2.1",
+    "dotenv-flow": "^4.1.0",
     "envalid": "^8.1.0",
     "pino": "^9.9.0",
     "pino-http": "^10.5.0",
