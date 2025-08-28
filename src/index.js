@@ -5,8 +5,12 @@ const logger = require('./logger.js');
 const httpLogger = require('./httpLogger.js');
 require('./metrics.js').start();
 const http = require('http');
+const {cleanEnv, num} = require('envalid');
 
-const port = process.env.PORT;
+const env = cleanEnv(process.env, {
+  PORT: num()
+});
+
 let server;
 
 function start() {
@@ -15,8 +19,8 @@ function start() {
     res.end('hello world');
   });
   require('./shutdown.js').onShutdown(() => server.close());
-  server.listen(port);
-  logger.info(`Server is running on http://localhost:${port}`);
+  server.listen(env.PORT);
+  logger.info(`Server is running on http://localhost:${(env.PORT)}`);
   // setTimeout(() => { throw "aaa" }, 1000);
 }
 

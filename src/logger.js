@@ -1,12 +1,17 @@
 require('dotenv').config();
 const pino = require('pino');
-const level = process.env.LOG_LEVEL || 'info';
+
+const {cleanEnv, str, bool} = require('envalid');
+const env = cleanEnv(process.env, {
+  LOG_LEVEL: str({choices: ['trace', 'debug', 'info', 'warn', 'error']}),
+  LOG_PRETTY: bool()
+});
 
 const logger = pino({
-  level: level,
+  level: env.LOG_LEVEL,
   // base: { service: 'nodejs-helloworld' },
-  ...(process.env.LOG_PRETTY === '1' && process.stdout.isTTY
-    ? { transport: { target: 'pino-pretty', options: { singleLine: true, translateTime: 'SYS:standard' } } }
+  ...(env.LOG_PRETTY && process.stdout.isTTY
+    ? {transport: {target: 'pino-pretty', options: {singleLine: true, translateTime: 'SYS:standard'}}}
     : {}),
 });
 
