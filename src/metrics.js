@@ -23,7 +23,7 @@ function start() {
     }
   });
 
-  require('./signals.js').fns.push(() => server.close());
+  require('./shutdown.js').onShutdown(() => server.close());
 
   server.listen(port, () => {
     logger.info(`metrics server: http://localhost:${port}/metrics`);

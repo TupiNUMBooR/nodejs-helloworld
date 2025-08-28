@@ -1,32 +1,31 @@
 const logger = require("./logger");
-let signals = {
-  fns: []
+const hooks = [];
+
+function onShutdown(fn) {
+  hooks.push(fn);
 }
 
-function handleSignals() {
-  process.on('SIGTERM', shutdown);
-  process.on('SIGINT', shutdown);
+function start() {
+  process.on('SIGTERM', shutdownOnSignal);
+  process.on('SIGINT', shutdownOnSignal);
   process.on('unhandledRejection', e => shutdownOnError('unhandledRejection', e));
   process.on('uncaughtException', e => shutdownOnError('uncaughtException', e));
 }
 
-function shutdown(signal) {
+function shutdownOnSignal(signal) {
   logger.info(`shutdown on ${signal}`);
-  onShutdown();
+  runHooks();
 }
 
 function shutdownOnError(errorType, error) {
   logger.error(`shutdown on ${errorType}: "${error}"`);
-  onShutdown();
+  runHooks();
   process.exit(101);
 }
 
-function onShutdown() {
-  for (let fn of signals.fns) {
-    fn();
-  }
+function runHooks() {
+  for (let fn of hooks) fn();
 }
 
-handleSignals();
-
-module.exports = signals;
+start();
+module.exports = {onShutdown};

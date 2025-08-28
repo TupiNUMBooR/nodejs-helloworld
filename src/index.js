@@ -14,7 +14,7 @@ function start() {
     httpLogger(req, res);
     res.end('hello world');
   });
-  require('./signals.js').fns.push(() => server.close());
+  require('./shutdown.js').onShutdown(() => server.close());
   server.listen(port);
   logger.info(`Server is running on http://localhost:${port}`);
   // setTimeout(() => { throw "aaa" }, 1000);
