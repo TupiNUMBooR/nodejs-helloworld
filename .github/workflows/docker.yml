@@ -43,8 +43,8 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=ref,event=tag,pattern={{version}}
-            type=ref,event=tag,pattern={{major}}.{{minor}}
-            type=ref,event=tag,pattern={{major}}
+            type=semver,event=tag,pattern={{major}}.{{minor}}
+            type=semver,event=tag,pattern={{major}}
           labels: |
             org.opencontainers.image.source=${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
