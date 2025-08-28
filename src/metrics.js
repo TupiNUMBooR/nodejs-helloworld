@@ -1,7 +1,7 @@
 const http = require('node:http');
 const client = require('prom-client');
 const logger = require('./logger');
-const httpLogger = require('./httpLogger');
+const httpLogger = require('./httpLogger').create('trace');
 const {cleanEnv, num} = require('envalid');
 let server;
 

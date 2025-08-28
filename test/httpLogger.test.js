@@ -12,6 +12,6 @@ test('httpLogger', async () => {
   let res = new EventEmitter();
   res.setHeader = () => {};
 
-  httpLogger(req, res);
+  httpLogger.create('info')(req, res);
   res.emit('finish');
 });
