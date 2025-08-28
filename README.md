@@ -1,6 +1,6 @@
 # NodeJS HelloWorld
 
-Runs http ok-server on localhost:3002
+Runs http ok-server on localhost:28080
 
 ```sh
 cp .env.example .env

@@ -5,8 +5,14 @@ services:
     restart: always
     ports:
       - "$PORT:$PORT"
+      - "$METRICS_PORT:$METRICS_PORT"
     env_file:
       - .env
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:$METRICS_PORT/healthz" ]
+      interval: 1s
+      timeout: 3s
+      retries: 30
     build:
       context: .
       args:
