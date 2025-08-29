@@ -1,5 +1,3 @@
-name: "nodejs-helloworld"
-
 services:
 
   mongo:
@@ -9,8 +7,8 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: nodejs_helloworld
-      MONGO_INITDB_ROOT_PASSWORD: nodejs_helloworld_pass_12345
+      MONGO_INITDB_ROOT_USERNAME: pochka
+      MONGO_INITDB_ROOT_PASSWORD: tapochka
     volumes:
       - ./mongo_data:/data/db
 
@@ -23,7 +21,7 @@ services:
     ports:
       - "8081:8081"
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: nodejs_helloworld
-      ME_CONFIG_MONGODB_ADMINPASSWORD: nodejs_helloworld_pass_12345
-      ME_CONFIG_MONGODB_URL: mongodb://nodejs_helloworld:nodejs_helloworld_pass_12345@mongo:27017/
+      ME_CONFIG_MONGODB_ADMINUSERNAME: pochka
+      ME_CONFIG_MONGODB_ADMINPASSWORD: tapochka
+      ME_CONFIG_MONGODB_URL: mongodb://pochka:tapochka@mongo:27017/
       ME_CONFIG_BASICAUTH: false
