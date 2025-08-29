@@ -30,3 +30,13 @@ test('shutdown on unhandledRejection', () => {
     process.exit = exit;
   }
 });
+
+test('shutdown with error in hook', () => {
+  let called = [];
+  shutdown.onShutdown(() => { throw 'a' });
+  shutdown.onShutdown(() => called.push('b'));
+
+  process.emit('SIGTERM', 'SIGTERM');
+
+  assert.deepEqual(called, ['b']);
+});

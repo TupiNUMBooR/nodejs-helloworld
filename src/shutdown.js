@@ -1,38 +1,34 @@
 const logger = require("./logger");
 const hooks = [];
 
+process.on('SIGTERM', shutdownOnSignal);
+process.on('SIGINT', shutdownOnSignal);
+process.on('unhandledRejection', e => shutdownOnError('unhandledRejection', e));
+process.on('uncaughtException', e => shutdownOnError('uncaughtException', e));
+
 function onShutdown(fn) {
   hooks.push(fn);
 }
 
-function start() {
-  process.on('SIGTERM', shutdownOnSignal);
-  process.on('SIGINT', shutdownOnSignal);
-
-  process.on('unhandledRejection', e => shutdownOnError('unhandledRejection', e));
-  process.on('uncaughtException', e => shutdownOnError('uncaughtException', e));
-}
-
-async function shutdownOnSignal(signal) {
+function shutdownOnSignal(signal) {
   logger.info(`shutdown on ${signal}`);
-  await runHooks();
+  runHooks();
 }
 
-async function shutdownOnError(errorType, error) {
+function shutdownOnError(errorType, error) {
   logger.error(`shutdown on ${errorType}: "${error}"`);
-  await runHooks();
+  runHooks();
   process.exit(101);
 }
 
-async function runHooks() {
+function runHooks() {
   for (let fn of hooks) {
     try {
-      await fn();
+      fn();
     } catch (e) {
       logger.warn(`shutdown hook failed on: "${e}"`);
     }
   }
 }
 
-start();
 module.exports = {onShutdown};
