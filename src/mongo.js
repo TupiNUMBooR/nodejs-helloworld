@@ -9,6 +9,9 @@ let client;
 let db;
 
 shutdown.onShutdown(() => close());
+module.exports = {connect, close, collection};
+
+// functions
 
 async function connect() {
   if (db) return db;
@@ -28,5 +31,3 @@ async function close() {
   client = undefined;
   db = undefined;
 }
-
-module.exports = {connect, close, collection};

@@ -12,6 +12,9 @@ const MAX_DOWNLOAD_BYTES = Number(100 * 1024 * 1024);
 let bot;
 
 shutdown.onShutdown(async () => await stop());
+module.exports = {start, stop, bot};
+
+// functions
 
 function human(bytes) {
   if (bytes < 1024) return bytes + ' B';
@@ -126,5 +129,3 @@ async function stop() {
     logger.info('Telegram bot shutdown');
   }
 }
-
-module.exports = {start, stop, bot};

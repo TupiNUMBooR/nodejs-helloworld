@@ -13,6 +13,9 @@ let server;
 
 shutdown.onShutdown(() => stop());
 client.collectDefaultMetrics();
+module.exports = {start, stop};
+
+// functions
 
 function start() {
   server = http.createServer(async (req, res) => {
@@ -41,5 +44,3 @@ function stop() {
     server.close();
   }
 }
-
-module.exports = {start, stop};

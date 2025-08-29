@@ -6,6 +6,10 @@ process.on('SIGINT', shutdownOnSignal);
 process.on('unhandledRejection', e => shutdownOnError('unhandledRejection', e));
 process.on('uncaughtException', e => shutdownOnError('uncaughtException', e));
 
+module.exports = {onShutdown};
+
+// functions
+
 function onShutdown(fn) {
   hooks.push(fn);
 }
@@ -30,5 +34,3 @@ function runHooks() {
     }
   }
 }
-
-module.exports = {onShutdown};
