@@ -49,11 +49,6 @@ async function downloadByFileId(fileId) {
 function start() {
   bot = new Telegraf(env.TELEGRAM_BOT_TOKEN, {handlerTimeout: 10_000});
 
-  // echo text
-  bot.on(message('text'), async (ctx) => {
-    await ctx.reply(ctx.message.text, {reply_to_message_id: ctx.message.message_id});
-  });
-
   // echo voice file_id
   // bot.on(message('voice'), async (ctx) => {
   //   const fileId = ctx.message.voice.file_id;
@@ -80,6 +75,39 @@ function start() {
     const {buffer, name} = await downloadByFileId(file_id);
     logger.info(`downloaded video_note of size ${human(buffer.length)} and duration ${duration} s`);
     await ctx.replyWithVideoNote({source: buffer, filename: name}, {reply_to_message_id: ctx.message.message_id});
+  });
+
+  bot.command('start', async (ctx) => {
+    ctx.reply('commands:\n/start\n/buy');
+  });
+
+  bot.command('buy', async (ctx) => {
+    await ctx.replyWithInvoice({
+      title: 'Echo Support',
+      description: 'One shiny Star ✨',
+      payload: `stars:${ctx.chat.id}:${Date.now()}`, // will return in successful_payment
+      provider_token: '',
+      currency: 'XTR',
+      prices: [{label: 'Star', amount: 1}],
+    });
+  });
+
+  bot.on('pre_checkout_query', (ctx) => ctx.answerPreCheckoutQuery(true));
+
+  bot.on('successful_payment', (ctx) => {
+    const sp = ctx.message.successful_payment;
+    logger.info({
+      total_stars: sp.total_amount,
+      payload: sp.invoice_payload,
+      charge_id: sp.telegram_payment_charge_id,
+    }, 'payment ok');
+
+    ctx.reply('Thanks for the ⭐️!');
+  });
+
+  // echo text
+  bot.on(message('text'), async (ctx) => {
+    await ctx.reply(ctx.message.text, {reply_to_message_id: ctx.message.message_id});
   });
 
   bot.catch((err) => {
