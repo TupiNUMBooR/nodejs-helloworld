@@ -1,0 +1,29 @@
+name: "nodejs-helloworld"
+
+services:
+
+  mongo:
+    image: mongo:8
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: nodejs_helloworld
+      MONGO_INITDB_ROOT_PASSWORD: nodejs_helloworld_pass_12345
+    volumes:
+      - ./mongo_data:/data/db
+
+  # Admin panel (optional)
+  mongo-express:
+    image: mongo-express
+    restart: always
+    depends_on:
+      - mongo
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: nodejs_helloworld
+      ME_CONFIG_MONGODB_ADMINPASSWORD: nodejs_helloworld_pass_12345
+      ME_CONFIG_MONGODB_URL: mongodb://nodejs_helloworld:nodejs_helloworld_pass_12345@mongo:27017/
+      ME_CONFIG_BASICAUTH: false
