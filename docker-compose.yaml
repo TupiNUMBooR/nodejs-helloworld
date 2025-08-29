@@ -1,4 +1,4 @@
-# For local build
+# For local run and for push to dockerhub
 services:
   nodejs-helloworld:
     image: tupinumboor/nodejs-helloworld

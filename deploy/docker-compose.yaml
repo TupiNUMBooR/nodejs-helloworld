@@ -1,6 +1,7 @@
 services:
   nodejs-helloworld:
-    image: tupinumboor/nodejs-helloworld
+#    image: tupinumboor/nodejs-helloworld
+    image: ghcr.io/tupinumboor/nodejs-helloworld
     container_name: nodejs-helloworld
     restart: always
     ports:
