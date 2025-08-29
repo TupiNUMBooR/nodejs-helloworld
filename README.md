@@ -30,5 +30,7 @@ ssh $SSH_ADDRESS "cd ~/nodejs-helloworld && docker-compose up -d"
 - [x] github ci
   - [x] tests
   - [x] docker build and push
-- [ ] telegram bot
+- [x] telegram bot
+  - [x] echo
+  - [ ] payments
 - [ ] openai api
