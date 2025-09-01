@@ -2,6 +2,8 @@
 
 Runs http ok-server on localhost:28080
 
+docker: `ghcr.io/tupinumboor/nodejs-helloworld`
+
 ```sh
 touch .env.local
 npm ci
