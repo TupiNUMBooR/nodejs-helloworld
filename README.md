@@ -36,4 +36,6 @@ ssh $SSH_ADDRESS "cd ~/nodejs-helloworld && docker-compose up -d"
   - [x] echo
   - [x] payments
 - [x] openai api
-- [ ] mongodb
+- [x] mongodb
+- [ ] test + containers
+- [ ] test + ci variables
