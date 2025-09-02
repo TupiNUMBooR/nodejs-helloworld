@@ -23,12 +23,15 @@ function toWav16kMonoPcm(inputBuffer) {
       "pipe:1"               // output to stdout
     ], {stdio: ["pipe", "pipe", "pipe"]});
     const outChunks = [];
-    logger.debug(ff.spawnargs.join(" "));
+    let log = "";
+    logger.info(`started: ${ff.spawnargs.join(" ")}`);
 
     ff.stdout.on("data", (c) => outChunks.push(c));
-    ff.stderr.on("data", (c) => logger.debug(c.toString()));
+    ff.stderr.on("data", (c) => log += c);
     ff.on("error", reject);
     ff.on("close", (code) => {
+      logger.info(`finished: ${ff.spawnargs.join(" ")}`);
+      logger.debug(log);
       if (code === 0)
         resolve(Buffer.concat(outChunks));
       else
