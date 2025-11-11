@@ -1,5 +1,3 @@
-console.log('Happy developing ✨');
-
 require('dotenv-flow').config();
 const fs = require('fs/promises');
 const logger = require('./logger');
@@ -8,6 +6,12 @@ require('./server').start();
 require('./telegramBot').start();
 require('./openai').ask();
 const ffmpeg = require('./ffmpeg');
+const tg = require('./telegramBot');
+tg.start();
+tg.onText((ctx, text) => {
+  tg.replyText(ctx, "text received: " + text);
+});
+
 
 (async () => {
   const ogg = await fs.readFile('./test/audio.ogg');

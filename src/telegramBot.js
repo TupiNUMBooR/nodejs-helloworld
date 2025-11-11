@@ -9,10 +9,13 @@ const env = envalid.cleanEnv(process.env, {
   TELEGRAM_DEBUG_CHAT_ID: envalid.num()
 });
 const MAX_DOWNLOAD_BYTES = Number(100 * 1024 * 1024);
+const onTextHooks = [];
+const onVoiceHooks = [];
+const onVideoNoteHooks = [];
 let bot;
 
 shutdown.onShutdown(async () => await stop());
-module.exports = {start, stop, bot};
+module.exports = {start, stop, onText, onVoice, onVideoNote, sendDebugText, sendText, sendVoice, replyText, replyVoice};
 
 // functions
 
@@ -49,35 +52,60 @@ async function downloadByFileId(fileId) {
   return {buffer, name};
 }
 
+function onText(fun) {
+  onTextHooks.push(fun);
+}
+
+function onVoice(fun) {
+  onVoiceHooks.push(fun);
+}
+
+function onVideoNote(fun) {
+  onVideoNoteHooks.push(fun);
+}
+
+async function sendDebugText(text) {
+  await sendText(env.TELEGRAM_DEBUG_CHAT_ID, text);
+}
+
+async function sendText(chatId, text) {
+  await bot.telegram.sendMessage(env.TELEGRAM_DEBUG_CHAT_ID, text);
+}
+
+async function replyText(ctx, text) {
+  await ctx.reply(text, {reply_to_message_id: ctx.message.message_id});
+}
+
+async function sendVoice(chatId, voiceBuffer) {
+  await bot.telegram.sendVoice(chatId, voiceBuffer);
+}
+
+async function replyVoice(ctx, voiceBuffer) {
+  await ctx.replyWithVoice({
+    source: voiceBuffer,
+    filename: 'response.wav'
+  }, {reply_to_message_id: ctx.message.message_id});
+}
+
 function start() {
   bot = new Telegraf(env.TELEGRAM_BOT_TOKEN, {handlerTimeout: 10_000});
-
-  // echo voice file_id
-  // bot.on(message('voice'), async (ctx) => {
-  //   const fileId = ctx.message.voice.file_id;
-  //   await ctx.telegram.sendVoice(ctx.chat.id, fileId, {reply_to_message_id: ctx.message.message_id});
-  // });
 
   // echo voice downloaded file
   bot.on(message('voice'), async (ctx) => {
     const {file_id, duration} = ctx.message.voice;
     const {buffer, name} = await downloadByFileId(file_id);
-    logger.info(`downloaded voice of size ${human(buffer.length)} and duration ${duration} s`);
-    await ctx.replyWithVoice({source: buffer, filename: name}, {reply_to_message_id: ctx.message.message_id});
+    logger.info(`downloaded voice with name ${name} of size ${human(buffer.length)} and duration ${duration} s`);
+    for (let hook of onVoiceHooks)
+      hook(ctx, buffer);
   });
-
-  // echo video_note file_id
-  // bot.on(message('video_note'), async (ctx) => {
-  //   const fileId = ctx.message.video_note.file_id;
-  //   await ctx.telegram.sendVideoNote(ctx.chat.id, fileId, {reply_to_message_id: ctx.message.message_id});
-  // });
 
   // echo video_note downloaded file
   bot.on(message('video_note'), async (ctx) => {
     const {file_id, duration} = ctx.message.video_note;
     const {buffer, name} = await downloadByFileId(file_id);
-    logger.info(`downloaded video_note of size ${human(buffer.length)} and duration ${duration} s`);
-    await ctx.replyWithVideoNote({source: buffer, filename: name}, {reply_to_message_id: ctx.message.message_id});
+    logger.info(`downloaded video_note with name ${name} of size ${human(buffer.length)} and duration ${duration} s`);
+    for (let hook of onVideoNoteHooks)
+      hook(ctx, buffer);
   });
 
   bot.command('start', async (ctx) => {
@@ -95,7 +123,7 @@ function start() {
     });
   });
 
-  bot.on('pre_checkout_query', (ctx) => ctx.answerPreCheckoutQuery(true));
+  bot.on('pre_checkout_query', (ctx) => ctx.answerPreCheckoutQuery(false, "not implemented"));
 
   bot.on('successful_payment', (ctx) => {
     const sp = ctx.message.successful_payment;
@@ -110,7 +138,8 @@ function start() {
 
   // echo text
   bot.on(message('text'), async (ctx) => {
-    await ctx.reply(ctx.message.text, {reply_to_message_id: ctx.message.message_id});
+    for (let hook of onTextHooks)
+      hook(ctx, ctx.message.text);
   });
 
   bot.catch((err) => {
